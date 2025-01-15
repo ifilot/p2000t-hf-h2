@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "config.h": "c",
+        "util.h": "c",
+        "stdio.h": "c",
+        "terminal.h": "c",
+        "cmath": "c",
+        "complex": "c"
+    }
+}

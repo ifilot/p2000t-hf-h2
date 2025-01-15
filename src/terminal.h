@@ -2,13 +2,13 @@
  *                                                                        *
  *   Author: Ivo Filot <ivo@ivofilot.nl>                                  *
  *                                                                        *
- *   P2000T-HF-H2 is free software:                                       *
+ *   P2000T-SDCARD is free software:                                      *
  *   you can redistribute it and/or modify it under the terms of the      *
  *   GNU General Public License as published by the Free Software         *
  *   Foundation, either version 3 of the License, or (at your option)     *
  *   any later version.                                                   *
  *                                                                        *
- *   P2000T-HF-H2 is distributed in the hope that it will be useful,      *
+ *   P2000T-SDCARD is distributed in the hope that it will be useful,     *
  *   but WITHOUT ANY WARRANTY; without even the implied warranty          *
  *   of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.              *
  *   See the GNU General Public License for more details.                 *
@@ -18,24 +18,57 @@
  *                                                                        *
  **************************************************************************/
 
-#ifndef _INTEGRALS_H
-#define _INTEGRALS_H
+#ifndef _TERMINAL_H
+#define _TERMINAL_H
 
-#include <math.h>
+#include <stdio.h>
+#include <string.h>
 #include "memory.h"
-#include "terminal.h"
+#include "util.h"
 
-#define PI 3.141527
+#define LINELENGTH 40
+#define BLINK_INTERVAL 500 // ms
+#define TIMER_INTERVAL 20
 
-float overlap_cgf(float *coeff1, float *coeff2, float *alpha1, float *alpha2, float *pos1, float *pos2, uint8_t sz1, uint8_t sz2);
-float kinetic_cgf(float *coeff1, float *coeff2, float *alpha1, float *alpha2, float *pos1, float *pos2, uint8_t sz1, uint8_t sz2);
-float kinetic(float alpha1, uint8_t l1, uint8_t m1, uint8_t n1, float ax, float ay, float az,
-              float alpha2, uint8_t l2, uint8_t m2, uint8_t n2, float bx, float by, float bz);
-float overlap_1d(uint8_t l1, uint8_t l2, float x1, float x2, float gamma);
-float normalization_gto(float alpha, uint8_t l, uint8_t m, uint8_t n);
-float overlap(float alpha1, uint8_t l1, uint8_t m1, uint8_t n1, float ax, float ay, float az,
-              float alpha2, uint8_t l2, uint8_t m2, uint8_t n2, float bx, float by, float bz);
-float binomial(int8_t a, int8_t b);
-float binomial_prefactor(int8_t s, int8_t ia, int8_t ib, float xpa, float xpb);
+// these (global) variables are used to track the terminal
+extern uint8_t _terminal_curline;
+extern uint8_t _terminal_maxlines;
+extern uint8_t _terminal_startline;
+extern uint8_t _terminal_endline;
+extern uint16_t _prevcounter;
 
-#endif // __INTEGRALS_H
+extern char __input[INPUTLENGTH+1];
+extern uint8_t __inputpos;
+
+extern char termbuffer[LINELENGTH];
+
+void terminal_init(uint8_t, uint8_t);
+void terminal_printtermbuffer(void);
+void terminal_redoline(void);
+void terminal_scrollup(void);
+void terminal_backup_line(void);
+
+void print_error(char* str);
+
+/**
+ * @brief Print a line to the terminal
+ * 
+ * @param str 
+ */
+void print(char* str);
+
+/**
+ * @brief Print a line to regular terminal, but overwrite the line when a new
+ *        line is going to be printed.
+ * 
+ * @param str 
+ */
+void print_recall(char* str);
+
+/**
+ * @brief Produce a blinking cursor
+ * 
+ */
+void terminal_cursor_blink(void);
+
+#endif // _TERMINAL_H
